@@ -1,0 +1,16 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Theme.NoteMe" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <!-- Primary brand color. -->
+        <color name="colorPrimary">#FF8797</color>
+        <color name="colorPrimaryDark">#C95769</color>
+        <color name="colorAccent">#FFB9C8</color>
+
+        <color name="secondaryColorPrimary">#5BC0BE</color>
+        <color name="secondaryColorPrimaryDark">#1E8F8E</color>
+        <color name="secondaryColorLight">#8FF3F1</color>
+        <!-- Status bar color. -->
+        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
+        <!-- Customize your theme here. -->
+    </style>
+</resources>
