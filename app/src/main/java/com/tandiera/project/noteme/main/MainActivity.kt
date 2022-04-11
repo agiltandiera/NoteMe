@@ -1,7 +1,8 @@
-package com.tandiera.project.noteme
+package com.tandiera.project.noteme.main
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.tandiera.project.noteme.R
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
