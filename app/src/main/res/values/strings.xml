@@ -2,4 +2,6 @@
     <string name="app_name">Note Me</string>
     <string name="lets">Let\'s More Productive</string>
     <string name="noteMe">NOTE ME</string>
+    <string name="home">Home</string>
+    <string name="task_complete">Task Complete</string>
 </resources>
