@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/secondaryColorPrimaryDark"
+    android:layout_gravity="center"
+    android:orientation="vertical"
+    tools:context=".views.splash.SplashActivity">
+
+    <ImageView
+        android:id="@+id/iv_logo"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="200dp"
+        android:src="@drawable/logo_kerjaanku"/>
+
+    <TextView
+        android:id="@+id/tv_noteMe"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/noteMe"
+        android:layout_gravity="center"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:textColor="#ffff"
+        android:layout_marginTop="12dp"/>
+
+    <TextView
+        android:id="@+id/tv_Lets"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/lets"
+        android:textColor="@color/colorPrimary"
+        android:layout_marginTop="4dp"
+        android:layout_gravity="center"/>
+
+</LinearLayout>

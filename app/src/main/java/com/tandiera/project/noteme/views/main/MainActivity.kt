@@ -1,4 +1,4 @@
-package com.tandiera.project.noteme.main
+package com.tandiera.project.noteme.views.main
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
