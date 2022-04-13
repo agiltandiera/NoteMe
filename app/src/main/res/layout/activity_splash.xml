@@ -21,7 +21,7 @@
         android:id="@+id/tv_noteMe"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/noteMe"
+        android:text="Note Me"
         android:layout_gravity="center"
         android:textSize="16sp"
         android:textStyle="bold"
@@ -32,7 +32,7 @@
         android:id="@+id/tv_Lets"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/lets"
+        android:text="Let's More Productive"
         android:textColor="@color/colorPrimary"
         android:layout_marginTop="4dp"
         android:layout_gravity="center"/>
