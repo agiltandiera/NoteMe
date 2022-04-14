@@ -4,14 +4,15 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/AndroidStudio/Project/Codepolitan/NoteMe/app/src/main/res/drawable/bottom_navigation_color.xml" value="0.1" />
+        <entry key="..\:/AndroidStudio/Project/Codepolitan/NoteMe/app/src/main/res/drawable/bottom_navigation_colored.xml" value="0.1" />
         <entry key="..\:/AndroidStudio/Project/Codepolitan/NoteMe/app/src/main/res/drawable/ic_done.xml" value="0.19583333333333333" />
         <entry key="..\:/AndroidStudio/Project/Codepolitan/NoteMe/app/src/main/res/drawable/ic_home.xml" value="0.19583333333333333" />
         <entry key="..\:/AndroidStudio/Project/Codepolitan/NoteMe/app/src/main/res/drawable/ic_launcher_background.xml" value="0.19583333333333333" />
         <entry key="..\:/AndroidStudio/Project/Codepolitan/NoteMe/app/src/main/res/layout/activity_main.xml" value="0.1" />
         <entry key="..\:/AndroidStudio/Project/Codepolitan/NoteMe/app/src/main/res/layout/activity_splash.xml" value="0.1" />
         <entry key="..\:/AndroidStudio/Project/Codepolitan/NoteMe/app/src/main/res/layout/fragment_home.xml" value="0.1" />
-        <entry key="..\:/AndroidStudio/Project/Codepolitan/NoteMe/app/src/main/res/layout/layout_empty_task.xml" value="0.14666666666666667" />
-        <entry key="..\:/AndroidStudio/Project/Codepolitan/NoteMe/app/src/main/res/menu/main_menu.xml" value="0.4466666666666667" />
+        <entry key="..\:/AndroidStudio/Project/Codepolitan/NoteMe/app/src/main/res/layout/layout_empty_task.xml" value="0.1" />
+        <entry key="..\:/AndroidStudio/Project/Codepolitan/NoteMe/app/src/main/res/menu/main_menu.xml" value="0.22" />
       </map>
     </option>
   </component>
