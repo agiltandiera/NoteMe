@@ -18,7 +18,7 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         app:menu="@menu/main_menu"
-        android:background="@android:color/white"
+        android:background="@color/white"
         app:itemIconTint="@drawable/bottom_navigation_colored"
         app:itemTextColor="@drawable/bottom_navigation_colored"
         app:layout_constraintBottom_toBottomOf="parent"/>

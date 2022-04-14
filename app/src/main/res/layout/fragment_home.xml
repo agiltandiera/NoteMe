@@ -22,7 +22,7 @@
         android:text="My Task"
         android:textStyle="bold"
         android:textSize="32sp"
-        android:textColor="#FFFF"
+        android:textColor="@color/white"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginTop="16dp"

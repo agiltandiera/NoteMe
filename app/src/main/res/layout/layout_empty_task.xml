@@ -15,14 +15,14 @@
         android:layout_height="wrap_content"
         android:text="Let's More Productive"
         android:textSize="16sp"
-        android:textColor="#000000"
+        android:textColor="@color/black"
         android:layout_marginTop="8dp"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Tell me what you want to do!"
-        android:textColor="#636363"
+        android:textColor="@color/gray"
         android:layout_marginTop="4dp"/>
 
 </LinearLayout>
