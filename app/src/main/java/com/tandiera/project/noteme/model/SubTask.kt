@@ -8,5 +8,5 @@ data class SubTask(
     val id : Int? = null,
     val idTask : Int? = null,
     val title : String? = null,
-    val isComplete : Boolean = false
+    var isComplete : Boolean = false
 ) : Parcelable

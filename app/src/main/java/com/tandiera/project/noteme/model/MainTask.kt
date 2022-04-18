@@ -9,5 +9,5 @@ data class MainTask(
     val title : String? = null,
     val details : String? = null,
     val date : String? = null,
-    val isComplete : Boolean? = null
+    var isComplete : Boolean? = null
 ) : Parcelable
