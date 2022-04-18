@@ -6,6 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tandiera.project.noteme.R
+import com.tandiera.project.noteme.adapter.TaskAdapter
+import com.tandiera.project.noteme.repository.TaskRepository
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -36,6 +38,32 @@ class HomeFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_home, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        val tasks = TaskRepository.getDataTasks(context)
+
+        if(tasks != null) {
+            showTasks()
+            val taskAdapter = TaskAdapter()
+            tasks.tasks?.let { taskAdapter.setData(it) }
+
+            rvTask.adapter = taskAdapter
+        } else {
+            hideTasks()
+        }
+    }
+
+    private fun hideTasks() {
+        rvTask.visibility = View.GONE
+        layoutEmpty.visibility = View.VISIBLE
+    }
+
+    private fun showTasks() {
+        rvTask.visibility = View.VISIBLE
+        layoutEmpty.visibility = View.GONE
     }
 
     companion object {
