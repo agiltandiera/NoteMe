@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tandiera.project.noteme.R
+import com.tandiera.project.noteme.model.SubTask
 import com.tandiera.project.noteme.model.Task
 
 class TaskAdapter : RecyclerView.Adapter<TaskAdapter.ViewHolder>() {
@@ -21,6 +22,10 @@ class TaskAdapter : RecyclerView.Adapter<TaskAdapter.ViewHolder>() {
 
             if(task.subTask != null) {
                 showSubTasks()
+                val subTaskAdapter = SubTaskAdapter()
+                subTaskAdapter.setData(task.subTask)
+
+                itemView.rvSubTask.adapter = subTaskAdapter
             } else {
                 hideSubTask()
             }
@@ -79,5 +84,6 @@ class TaskAdapter : RecyclerView.Adapter<TaskAdapter.ViewHolder>() {
 
     fun setData(tasks: List<Task>) {
         this.tasks = tasks
+        notifyDataSetChanged()
     }
 }
