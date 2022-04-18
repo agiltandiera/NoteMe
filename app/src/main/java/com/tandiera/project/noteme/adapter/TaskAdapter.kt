@@ -5,8 +5,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tandiera.project.noteme.R
-import com.tandiera.project.noteme.model.SubTask
 import com.tandiera.project.noteme.model.Task
+import com.tandiera.project.noteme.model.Tasks
 
 class TaskAdapter : RecyclerView.Adapter<TaskAdapter.ViewHolder>() {
     class ViewHolder(view : View) : RecyclerView.ViewHolder(view) {
@@ -82,7 +82,7 @@ class TaskAdapter : RecyclerView.Adapter<TaskAdapter.ViewHolder>() {
 
     override fun getItemCount(): Int = tasks.size
 
-    fun setData(tasks: List<Task>) {
+    fun setData(tasks: List<Tasks>?) {
         this.tasks = tasks
         notifyDataSetChanged()
     }
