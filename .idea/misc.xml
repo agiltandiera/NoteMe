@@ -3,6 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/AndroidStudio/Project/Codepolitan/NoteMe/app/src/main/res/drawable/bg_btn_add_date_task.xml" value="0.1" />
         <entry key="..\:/AndroidStudio/Project/Codepolitan/NoteMe/app/src/main/res/drawable/bg_card_task.xml" value="0.1" />
         <entry key="..\:/AndroidStudio/Project/Codepolitan/NoteMe/app/src/main/res/drawable/bg_date_task.xml" value="0.1" />
         <entry key="..\:/AndroidStudio/Project/Codepolitan/NoteMe/app/src/main/res/drawable/bg_submit_task.xml" value="0.1" />
