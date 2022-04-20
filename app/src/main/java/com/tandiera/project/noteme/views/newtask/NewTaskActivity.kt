@@ -9,16 +9,26 @@ import android.view.View
 import android.widget.DatePicker
 import androidx.core.content.ContextCompat
 import com.tandiera.project.noteme.R
+import com.tandiera.project.noteme.adapter.AddSubTaskAdapter
 import com.tandiera.project.noteme.util.DateKerjakaanku
 import org.jetbrains.anko.toast
 
 class NewTaskActivity : AppCompatActivity() {
+
+    private lateinit var addSubTaskAdapter: AddSubTaskAdapter
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_new_task)
 
         setupActionBar()
+        setupAddSubTaskAdapter()
         onClick()
+    }
+
+    private fun setupAddSubTaskAdapter() {
+        addSubTaskAdapter = AddSubTaskAdapter()
+        rvAddSubTask.adapter = addSubTaskAdapter
     }
 
     private fun onClick() {
@@ -39,6 +49,11 @@ class NewTaskActivity : AppCompatActivity() {
         btnRemoveDateTask.setOnClickListener {
             btnAddDateTask.text = null
             checkIsDateFilled(false)
+        }
+
+        btnAddSubTask.setOnClickListener {
+            val subTask = Subtask(null, null, "")
+            addSubTaskAdapter.addTask(subTask)
         }
     }
 
