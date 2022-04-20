@@ -1,5 +1,6 @@
 package com.tandiera.project.noteme.adapter
 
+import android.graphics.Paint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -33,6 +34,12 @@ class SubTaskAdapter : RecyclerView.Adapter<SubTaskAdapter.ViewHolder> () {
         fun bind(subTask: SubTask) {
             binding.tvTitleSubTask.text = subTask.title
 
+            if(task.mainTask?.isComplete!!) {
+                completeSubTask()
+            } else {
+                isCompleteSubTask()
+            }
+
             binding.btnDoneSubTask.setOnClickListener {
                 if(subTask.isComplete) {
                     isCompleteSubTask()
@@ -46,10 +53,12 @@ class SubTaskAdapter : RecyclerView.Adapter<SubTaskAdapter.ViewHolder> () {
 
         private fun completeSubTask() {
             binding.btnDoneSubTask.setImageResource(R.drawable.ic_complete_task)
+            binding.tvTitleSubTask.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
         }
 
         private fun isCompleteSubTask() {
             binding.btnDoneSubTask.setImageResource(R.drawable.ic_done_task)
+            binding.tvTitleSubTask.paintFlags = Paint.ANTI_ALIAS_FLAG
         }
 
     }
