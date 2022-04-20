@@ -2,4 +2,12 @@
     <string name="app_name">Note Me</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="submit">Submit</string>
+    <string name="add_sub_task">Add Sub Task</string>
+    <string name="add_date">Add Date</string>
+    <string name="add_details">Add Details</string>
+    <string name="title">Title</string>
+    <string name="enter_title">Enter Title...</string>
+    <string name="remove_task">Remove Task</string>
 </resources>
