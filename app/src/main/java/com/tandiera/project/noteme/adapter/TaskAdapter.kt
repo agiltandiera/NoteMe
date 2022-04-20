@@ -1,5 +1,6 @@
 package com.tandiera.project.noteme.adapter
 
+import android.graphics.Paint
 import android.text.Layout
 import android.view.LayoutInflater
 import android.view.View
@@ -37,6 +38,12 @@ class TaskAdapter : RecyclerView.Adapter<TaskAdapter.ViewHolder>() {
             binding.tvTitleTask.text = task.mainTask?.title
 //            itemView.tvTitleTask.text = task.mainTask?.title
 
+            if(task.mainTask?.isComplete!!) {
+                completeTask()
+            } else {
+                isCompleteTask()
+            }
+
             if(task.mainTask?.date != null && task.mainTask.date.isNotEmpty()) {
                 showDateTask()
 //                itemView.tvDateTask.text = task.mainTask.date
@@ -69,10 +76,12 @@ class TaskAdapter : RecyclerView.Adapter<TaskAdapter.ViewHolder>() {
 
         private fun completeTask() {
             binding.btnDoneTask.setImageResource(R.drawable.ic_complete_task)
+            binding.tvTitleTask.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
         }
 
         private fun isCompleteTask() {
             binding.btnDoneTask.setImageResource(R.drawable.ic_done_task)
+            binding.tvTitleTask.paintFlags = Paint.ANTI_ALIAS_FLAG
         }
 
         private fun hideSubTask() {
