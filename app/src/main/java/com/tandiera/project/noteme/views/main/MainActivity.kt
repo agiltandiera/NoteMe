@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import com.tandiera.project.noteme.R
 import com.tandiera.project.noteme.databinding.ActivityMainBinding
 import com.tandiera.project.noteme.views.home.HomeFragment
+import com.tandiera.project.noteme.views.newtask.NewTaskActivity
 
 class MainActivity : AppCompatActivity() {
 
@@ -17,6 +18,9 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         setupBottomNavigation()
+        btnAddTask.setOnClickListener {
+            startActivity<NewTaskActivity>()
+        }
     }
 
     private fun setupBottomNavigation() {
