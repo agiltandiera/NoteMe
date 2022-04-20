@@ -1,21 +1,45 @@
 package com.tandiera.project.noteme.adapter
 
+import android.text.Layout
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tandiera.project.noteme.R
+import com.tandiera.project.noteme.databinding.ItemTaskBinding
 import com.tandiera.project.noteme.model.Task
 import com.tandiera.project.noteme.model.Tasks
 
 class TaskAdapter : RecyclerView.Adapter<TaskAdapter.ViewHolder>() {
-    class ViewHolder(view : View) : RecyclerView.ViewHolder(view) {
-        fun bind(task: Task) {
-            itemView.tvTitleTask.text = task.mainTask?.title
 
-            if(task.mainTask.date != null && task.mainTask.date.isNotEmpty()) {
+    private var tasks = mutableListOf<Task>()
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        val binding = ItemTaskBinding
+            .inflate(LayoutInflater.from(parent.context), parent, false)
+        return ViewHolder(binding)
+   }
+
+    override fun getItemCount(): Int = tasks.size
+
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        holder.bind(tasks[position])
+    }
+
+    fun setData(it: List<Tasks>) {
+        this.tasks = tasks
+        notifyDataSetChanged()
+    }
+
+    inner class ViewHolder(val binding: ItemTaskBinding)
+        : RecyclerView.ViewHolder(binding.root) {
+        fun bind(task: Task) {
+            binding.tvTitleTask.text = task.mainTask?.title
+//            itemView.tvTitleTask.text = task.mainTask?.title
+
+            if(task.mainTask?.date != null && task.mainTask.date.isNotEmpty()) {
                 showDateTask()
-                itemView.tvDateTask.text = task.mainTask.date
+//                itemView.tvDateTask.text = task.mainTask.date
             } else {
                 hideDateTask()
             }
@@ -25,12 +49,13 @@ class TaskAdapter : RecyclerView.Adapter<TaskAdapter.ViewHolder>() {
                 val subTaskAdapter = SubTaskAdapter()
                 subTaskAdapter.setData(task.subTask)
 
-                itemView.rvSubTask.adapter = subTaskAdapter
+               binding.rvSubTask.adapter = subTaskAdapter
+//                itemView.rvSubTask.adapter = subTaskAdapter
             } else {
                 hideSubTask()
             }
 
-            itemView.btnDoneTask.setOnClickListener {
+            binding.btnDoneTask.setOnClickListener {
                 if(task.mainTask?.isComplete!!) {
                     isCompleteTask()
                     task.mainTask?.isComplete = false
@@ -43,47 +68,31 @@ class TaskAdapter : RecyclerView.Adapter<TaskAdapter.ViewHolder>() {
         }
 
         private fun completeTask() {
-            itemView.btnDoneTask.setImageResource(R.drawable.ic_complete_task)
+            binding.btnDoneTask.setImageResource(R.drawable.ic_complete_task)
         }
 
         private fun isCompleteTask() {
-            itemView.btnDoneTask.setImageResource(R.drawable.ic_done_task)
+            binding.btnDoneTask.setImageResource(R.drawable.ic_done_task)
         }
 
         private fun hideSubTask() {
-            itemView.lineTask.visibility = View.GONE
-            itemView.rvSubTask.visibility = View.GONE
+            binding.lineTask.visibility = View.GONE
+            binding.rvSubTask.visibility = View.GONE
         }
 
         private fun showSubTasks() {
-            itemView.lineTask.visibility = View.VISIBLE
-            itemView.rvSubTask.visibility = View.VISIBLE
+            binding.lineTask.visibility = View.VISIBLE
+            binding.rvSubTask.visibility = View.VISIBLE
         }
 
         private fun hideDateTask() {
-            itemView.containerDateTask.visibility = View.GONE
+            binding.containerDateTask.visibility = View.GONE
         }
 
         private fun showDateTask() {
-            itemView.containerDateTask.visibility = View.VISIBLE
+            binding.containerDateTask.visibility = View.VISIBLE
         }
 
     }
 
-    private lateinit var tasks : List<Task>
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_task, parent, false))
-    }
-
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(tasks[position])
-    }
-
-    override fun getItemCount(): Int = tasks.size
-
-    fun setData(tasks: List<Tasks>?) {
-        this.tasks = tasks
-        notifyDataSetChanged()
-    }
 }
