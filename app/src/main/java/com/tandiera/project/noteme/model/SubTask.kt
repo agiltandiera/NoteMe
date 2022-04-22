@@ -7,6 +7,6 @@ import kotlinx.android.parcel.Parcelize
 data class SubTask(
     val id : Int? = null,
     val idTask : Int? = null,
-    val title : String? = null,
+    var title : String? = null,
     var isComplete : Boolean = false
 ) : Parcelable

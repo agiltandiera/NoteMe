@@ -7,6 +7,7 @@ import com.tandiera.project.noteme.R
 import com.tandiera.project.noteme.databinding.ActivityMainBinding
 import com.tandiera.project.noteme.views.home.HomeFragment
 import com.tandiera.project.noteme.views.newtask.NewTaskActivity
+import org.jetbrains.anko.startActivity
 
 class MainActivity : AppCompatActivity() {
 
@@ -18,7 +19,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         setupBottomNavigation()
-        btnAddTask.setOnClickListener {
+        binding.btnAddTask.setOnClickListener {
             startActivity<NewTaskActivity>()
         }
     }

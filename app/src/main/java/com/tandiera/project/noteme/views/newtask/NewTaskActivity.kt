@@ -6,10 +6,12 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import com.tandiera.project.noteme.model.SubTask
 import android.widget.DatePicker
 import androidx.core.content.ContextCompat
 import com.tandiera.project.noteme.R
 import com.tandiera.project.noteme.adapter.AddSubTaskAdapter
+import com.tandiera.project.noteme.databinding.ActivityNewTaskBinding
 import com.tandiera.project.noteme.util.DateKerjakaanku
 import org.jetbrains.anko.toast
 
@@ -17,9 +19,12 @@ class NewTaskActivity : AppCompatActivity() {
 
     private lateinit var addSubTaskAdapter: AddSubTaskAdapter
 
+    private lateinit var binding : ActivityNewTaskBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_new_task)
+        binding = ActivityNewTaskBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         setupActionBar()
         setupAddSubTaskAdapter()
@@ -28,52 +33,52 @@ class NewTaskActivity : AppCompatActivity() {
 
     private fun setupAddSubTaskAdapter() {
         addSubTaskAdapter = AddSubTaskAdapter()
-        rvAddSubTask.adapter = addSubTaskAdapter
+        binding.rvAddSubTask.adapter = addSubTaskAdapter
     }
 
     private fun onClick() {
-        tbNewTask.setNavigationOnClickListener {
+        binding.tbNewTask.setNavigationOnClickListener {
             finish()
         }
 
-        btnAddDateTask.setOnClickListener {
+        binding.btnAddDateTask.setOnClickListener {
             DateKerjakaanku.showDatePicker(this,
                 DatePickerDialog.OnDateSetListener { _, year, month, dayOfMonth ->
                     val dateString = DateKerjakaanku.dateFromatSql(year, month, dayOfMonth)
-                    btnAddDateTask.text = DateKerjakaanku.dateFromSqlToDateViewTask(dateString)
+                    binding.btnAddDateTask.text = DateKerjakaanku.dateFromSqlToDateViewTask(dateString)
 
                     checkIsDateFilled(true)
                 })
         }
 
-        btnRemoveDateTask.setOnClickListener {
-            btnAddDateTask.text = null
+        binding.btnRemoveDateTask.setOnClickListener {
+            binding.btnAddDateTask.text = null
             checkIsDateFilled(false)
         }
 
-        btnAddSubTask.setOnClickListener {
-            val subTask = Subtask(null, null, "")
+        binding.btnAddSubTask.setOnClickListener {
+            val subTask = SubTask(null, null, "")
             addSubTaskAdapter.addTask(subTask)
         }
     }
 
     private fun checkIsDateFilled(isDateFilled: Boolean) {
         if(isDateFilled) {
-            btnAddDateTask.background = ContextCompat.getDrawable(this, R.drawable.bg_btn_add_date_task)
-            btnAddDateTask.setPadding(24, 24, 24)
-            btnRemoveDateTask.visibility = View.VISIBLE
+            binding.btnAddDateTask.background = ContextCompat.getDrawable(this, R.drawable.bg_btn_add_date_task)
+            binding.btnAddDateTask.setPadding(24, 24, 24, 24)
+            binding.btnRemoveDateTask.visibility = View.VISIBLE
         } else {
-            btnAddDateTask.setBackgroundResource(0)
-            btnAddDateTask.setPadding(0, 0, 0)
-            btnRemoveDateTask.visibility = View.GONE
+            binding.btnAddDateTask.setBackgroundResource(0)
+            binding.btnAddDateTask.setPadding(0, 0, 0, 0)
+            binding.btnRemoveDateTask.visibility = View.GONE
         }
 
     }
 
     private fun setupActionBar() {
-        setSupportActionBar(tbNewTask)
+        setSupportActionBar(binding.tbNewTask)
         supportActionBar?.title = ""
-        supportActionBar?.setDefaultDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

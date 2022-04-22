@@ -23,15 +23,12 @@
         <entry key="..\:/AndroidStudio/Project/Codepolitan/NoteMe/app/src/main/res/layout/item_add_sub_task.xml" value="0.22" />
         <entry key="..\:/AndroidStudio/Project/Codepolitan/NoteMe/app/src/main/res/layout/item_sub_task.xml" value="0.4466666666666667" />
         <entry key="..\:/AndroidStudio/Project/Codepolitan/NoteMe/app/src/main/res/layout/item_task.xml" value="0.4466666666666667" />
-        <entry key="..\:/AndroidStudio/Project/Codepolitan/NoteMe/app/src/main/res/layout/layout_empty_complete_task.xml" value="0.1" />
+        <entry key="..\:/AndroidStudio/Project/Codepolitan/NoteMe/app/src/main/res/layout/layout_empty_complete_task.xml" value="0.16666666666666666" />
         <entry key="..\:/AndroidStudio/Project/Codepolitan/NoteMe/app/src/main/res/layout/layout_empty_task.xml" value="0.1" />
         <entry key="..\:/AndroidStudio/Project/Codepolitan/NoteMe/app/src/main/res/menu/main_menu.xml" value="0.22" />
         <entry key="..\:/AndroidStudio/Project/Codepolitan/NoteMe/app/src/main/res/menu/new_task_menu.xml" value="0.17916666666666667" />
       </map>
     </option>
-  </component>
-  <component name="ProjectPlainTextFileTypeManager">
-    <file url="file://$PROJECT_DIR$/app/src/main/java/com/tandiera/project/noteme/adapter/TaskAdapter.kt" />
   </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="1.8" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
