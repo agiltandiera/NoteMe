@@ -3,7 +3,6 @@ package com.tandiera.project.noteme.util
 import android.app.DatePickerDialog
 import android.content.Context
 import java.text.SimpleDateFormat
-import java.time.Month
 import java.util.*
 
 object DateKerjakaanku {
@@ -22,11 +21,11 @@ object DateKerjakaanku {
         return "$year-$month-$dayOfMonth"
     }
 
-    fun dateFromSqlToDateViewTask(rawDate: String) : String {
+    fun dateFromSqlToDateViewTask(rawDate: String): String{
         var result = ""
-        val date = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault().parse(rawDate))
+        val date = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(rawDate)
 
-        if(date!= null) {
+        if (date != null){
             result = SimpleDateFormat("EEE, dd MM yyyy", Locale.getDefault()).format(date)
         }
 

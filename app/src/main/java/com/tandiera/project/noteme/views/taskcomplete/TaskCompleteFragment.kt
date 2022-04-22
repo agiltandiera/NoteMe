@@ -7,6 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import com.tandiera.project.noteme.R
 import com.tandiera.project.noteme.adapter.TaskAdapter
+import com.tandiera.project.noteme.databinding.FragmentHomeBinding
+import com.tandiera.project.noteme.databinding.FragmentTaskCompleteBinding
+import com.tandiera.project.noteme.model.SubTask
 import com.tandiera.project.noteme.model.Task
 import com.tandiera.project.noteme.model.Tasks
 import com.tandiera.project.noteme.repository.TaskRepository
@@ -22,37 +25,39 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  */
 class TaskCompleteFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+
+    private var _binding: FragmentTaskCompleteBinding? = null
+    private val binding get() = _binding!!
+
+    private var tasks: List<Task>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
         }
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_task_complete, container, false)
+        _binding = FragmentTaskCompleteBinding.inflate(inflater, container, false)
+        val view = binding.root
+        return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val tasks : Tasks? = TaskRepository.getDataTasks(context)
+        val tasks = context?.let { TaskRepository.getDataTasks(it) }
 
         if(tasks != null) {
             for (task : Task in tasks.tasks!!) {
                 task.mainTask?.isComplete = true
 
                 if(task.subTask != null) {
-                    for (subTask: subTask in task.subTask) {
+                    for (subTask: SubTask in task.subTask) {
                         subTask.isComplete = true
                     }
                 }
@@ -62,21 +67,21 @@ class TaskCompleteFragment : Fragment() {
             val taskAdapter = TaskAdapter()
             taskAdapter.setData(tasks.tasks)
 
-            rvTaskComplete.adapter = taskAdapter
+            binding.rvTaskComplete.adapter = taskAdapter
         } else {
             hideTaskComplete()
         }
     }
 
     private fun hideTaskComplete() {
-        rvTaskComplete.visibilty = View.GONE
-        layoutEmptyTaskComplete.visibilty = View.VISIBLE
-        fabDeleteTaskComplete.visibilty = View.GONE
+        binding.rvTaskComplete.visibility = View.GONE
+        binding.layoutEmptyTaskComplete.visibility = View.VISIBLE
+        binding.fabDeleteTaskComplete.visibility = View.GONE
     }
 
     private fun showTaskComplete() {
-        rvTaskComplete.visibilty = View.VISIBLE
-        layoutEmptyTaskComplete.visibilty = View.GONE
-        fabDeleteTaskComplete.visibilty = View.VISIBLE
+        binding.rvTaskComplete.visibility = View.VISIBLE
+        binding.layoutEmptyTaskComplete.visibility = View.GONE
+        binding.fabDeleteTaskComplete.visibility = View.VISIBLE
     }
 }

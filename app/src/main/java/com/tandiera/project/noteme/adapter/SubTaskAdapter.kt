@@ -34,7 +34,7 @@ class SubTaskAdapter : RecyclerView.Adapter<SubTaskAdapter.ViewHolder> () {
         fun bind(subTask: SubTask) {
             binding.tvTitleSubTask.text = subTask.title
 
-            if(task.mainTask?.isComplete!!) {
+            if(subTask.isComplete) {
                 completeSubTask()
             } else {
                 isCompleteSubTask()
