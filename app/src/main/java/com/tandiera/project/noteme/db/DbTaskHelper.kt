@@ -88,7 +88,7 @@ class DbTaskHelper(context: Context?) {
         values.put(TASK_TITLE, mainTask?.title)
         values.put(TASK_DETAILS, mainTask?.details)
         values.put(TASK_DATE, mainTask?.date)
-        if(mainTask!!.isComplete) {
+        if(mainTask!!.isComplete == true) {
             values.put(TASK_IS_COMPLETE, 1)
         } else {
             values.put(TASK_IS_COMPLETE, 0)

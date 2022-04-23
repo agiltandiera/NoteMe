@@ -42,6 +42,13 @@ class AddSubTaskAdapter : RecyclerView.Adapter<AddSubTaskAdapter.ViewHolder>() {
         listAddSubTask[position] = subTask
     }
 
+    fun getData(): List<SubTask>? {
+        if(listAddSubTask.size > 0) {
+            return listAddSubTask
+        }
+        return null
+    }
+
     inner class ViewHolder(val binding: ItemAddSubTaskBinding)
         : RecyclerView.ViewHolder(binding.root) {
         fun bind(subTask: SubTask) {
