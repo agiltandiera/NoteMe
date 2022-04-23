@@ -56,6 +56,7 @@
                 android:clipToPadding="false"
                 tools:listitem="@layout/item_task"
                 android:visibility="gone"
+                app:layout_constraintVertical_bias="0.0"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

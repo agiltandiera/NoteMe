@@ -7,6 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import com.tandiera.project.noteme.adapter.TaskAdapter
 import com.tandiera.project.noteme.databinding.FragmentHomeBinding
+import com.tandiera.project.noteme.db.DbSubTaskHelper
+import com.tandiera.project.noteme.db.DbTaskHelper
 import com.tandiera.project.noteme.repository.TaskRepository
 
 // TODO: Rename parameter arguments, choose names that match
@@ -24,6 +26,9 @@ class HomeFragment : Fragment() {
 
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
+
+    private lateinit var dbTaskHelper: DbTaskHelper
+    private lateinit var dbSubTaskHelper: DbSubTaskHelper
 
     //private lateinit var taskAdapter: TaskAdapter
 
@@ -47,17 +52,31 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val tasks = context?.let { TaskRepository.getDataTasks(it) }
+        setup()
+    }
 
-        if(tasks != null) {
+    override fun onResume() {
+        super.onResume()
+        getDataTask()
+    }
+
+    private fun getDataTask() {
+        val tasks = TaskRepository.getDataTaskFromDatabase(dbTaskHelper, dbSubTaskHelper)
+
+        if(tasks != null && tasks.isNotEmpty()) {
             showTasks()
             val taskAdapter = TaskAdapter()
-            tasks.tasks?.let { taskAdapter.setData(it) }
+            taskAdapter.setData(tasks)
 
             binding.rvTask.adapter = taskAdapter
         }else{
             hideTasks()
         }
+    }
+
+    private fun setup() {
+        dbTaskHelper = DbTaskHelper.getInstance(context)
+        dbSubTaskHelper = DbSubTaskHelper.getInstance(context)
     }
 
     private fun hideTasks() {
