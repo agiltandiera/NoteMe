@@ -2,6 +2,8 @@ package com.tandiera.project.noteme.views.newtask
 
 import android.app.AlertDialog
 import android.app.DatePickerDialog
+import android.app.Dialog
+import android.content.DialogInterface
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
@@ -133,7 +135,40 @@ class NewTaskActivity : AppCompatActivity() {
         }
 
         if (isEdit) {
-            // edit
+            val result = dbTaskHelper.updateTask(task?.mainTask)
+            if (result > 0) {
+                if (dataSubTask != null && dataSubTask.isNotEmpty()) {
+                    var isSuccess = false
+                    for (subTask: SubTask in dataSubTask) {
+                        if(subTask.id != null) {
+                            val resultSubTask = dbSubTaskHelper.updateSubTask(subTask)
+                            isSuccess = resultSubTask > 0
+                        } else {
+                            subTask.idTask = task?.mainTask?.id
+                            val resultSubTask = dbSubTaskHelper.insert(subTask)
+                            isSuccess = resultSubTask > 0
+                        }
+                    }
+                    if (isSuccess) {
+                        val dialog = showSuccessDialog("success add database")
+                        Handler().postDelayed({
+                            dialog.dismiss
+                        }, 1200)
+                    } else {
+                        val dialog = showFailedDialog("Failed to addd database")
+                        Handler().postDelayed({
+                            dialog.dismiss()
+                        }, delayedTime)
+                    }
+
+                } else {
+                    val dialog = showFailedDialog("Failed to addd database")
+                    Handler().postDelayed({
+                        dialog.dismiss()
+                        finish()
+                    }, delayedTime)
+                }
+            }
         } else {
             val result = dbTaskHelper.insert(task?.mainTask)
             if (result > 0) {
@@ -210,9 +245,28 @@ class NewTaskActivity : AppCompatActivity() {
         override fun onOptionsItemSelected(item: MenuItem): Boolean {
             when (item.itemId) {
                 R.id.action_remove_task -> {
-                    toast("Remove Task")
+                    AlertDialog.Builder(this)
+                        .setTitle("Delete")
+                        .setMessage("Apakah Anda yakin akan delete data ini?")
+                        .setPositiveButton("Yes") { dialog, _ ->
+                            task?.mainTask?.id?.let {
+                                val result = dbTaskHelper.deleteTask(it)
+                                if(result>0) {
+                                    val dialogSuccess = showSuccessDialog("Data ini berhasil dihapus")
+                                    Handler().postDelayed({
+                                        dialogSuccess.dismiss()
+                                        dialog.dismiss()
+                                        finish()
+                                    }, delayedTime)
+                                }
+                            }
+                        }
+                        .setNegativeButton("Tidak"), {dialog, _ ->
+                            dialog.dismiss()
+                        }.show()
                 }
             }
+
             return super.onOptionsItemSelected(item)
         }
     }
