@@ -23,14 +23,18 @@ import org.jetbrains.anko.toast
 
 class NewTaskActivity : AppCompatActivity() {
 
+    companion object {
+        const val EXTRA_TASK = "extra_task"
+    }
+
     private lateinit var addSubTaskAdapter: AddSubTaskAdapter
-    private lateinit var dbTaskHelper : DbTaskHelper
+    private lateinit var dbTaskHelper: DbTaskHelper
     private lateinit var dbSubTaskHelper: DbTaskHelper
     private var isEdit = false
-    private var delayedTime : Long = 1200
-    private var task : Task? = null
+    private var delayedTime: Long = 1200
+    private var task: Task? = null
 
-    private lateinit var binding : ActivityNewTaskBinding
+    private lateinit var binding: ActivityNewTaskBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,10 +55,27 @@ class NewTaskActivity : AppCompatActivity() {
     }
 
     private fun getDataExtra() {
-        if(task != null) {
+        if(intent != null) {
+            task = intent.getParcelableExtra(EXTRA_TASK)
+        }
+        if (task != null) {
+            isEdit = true
+            binding.btnSubmitTask.text = "Update"
 
+            setupView(task)
         } else {
             task = Task(mainTask = MainTask)
+        }
+    }
+
+    private fun setupView(task: Task?) {
+        binding.etTitleTask.setText(task?.mainTask?.title)
+        binding.etAddDetailsTask.setText(task?.mainTask?.details)
+        val dateString = task?.mainTask?.date
+        binding.btnAddDateTask.text = DateKerjakaanku.dateFromSqlToDateViewTask(dateString.toString)
+
+        if(task?.mainTask?.date!!.isNotEmpty()) {
+            checkIsDateFilled(true)
         }
     }
 
@@ -72,7 +93,8 @@ class NewTaskActivity : AppCompatActivity() {
             DateKerjakaanku.showDatePicker(this,
                 DatePickerDialog.OnDateSetListener { _, year, month, dayOfMonth ->
                     val dateString = DateKerjakaanku.dateFromatSql(year, month, dayOfMonth)
-                    binding.btnAddDateTask.text = DateKerjakaanku.dateFromSqlToDateViewTask(dateString)
+                    binding.btnAddDateTask.text =
+                        DateKerjakaanku.dateFromSqlToDateViewTask(dateString)
 
                     task?.mainTask?.date = dateString
                     checkIsDateFilled(true)
@@ -99,30 +121,30 @@ class NewTaskActivity : AppCompatActivity() {
         val detailTask = binding.etAddDetailsTask.text.toString()
         val dataSubTask = addSubTaskAdapter.getData()
 
-        if(titleTask.isEmpty()) {
+        if (titleTask.isEmpty()) {
             binding.etTitleTask.error = "Please field you title"
             binding.etTitleTask.requestFocus()
             return
         }
 
         task?.mainTask?.title = titleTask
-        if(detailTask.isNotEmpty()) {
+        if (detailTask.isNotEmpty()) {
             task?.mainTask?.details = detailTask
         }
 
-        if(isEdit) {
+        if (isEdit) {
             // edit
         } else {
             val result = dbTaskHelper.insert(task?.mainTask)
-            if(result>0) {
-                if(dataSubTask  != null && dataSubTask.isNotEmpty()) {
+            if (result > 0) {
+                if (dataSubTask != null && dataSubTask.isNotEmpty()) {
                     var isSuccess = false
-                    for(subTask : SubTask in dataSubTask) {
+                    for (subTask: SubTask in dataSubTask) {
                         subTask.idTask = result.toInt()
                         val resultSubTask = dbSubTaskHelper.insert(subTask)
-                        isSuccess = resultSubTask>0
+                        isSuccess = resultSubTask > 0
                     }
-                    if(isSuccess) {
+                    if (isSuccess) {
                         val dialog = showSuccessDialog("success add database")
                         Handler().postDelayed({
                             dialog.dismiss
@@ -132,62 +154,66 @@ class NewTaskActivity : AppCompatActivity() {
                         Handler().postDelayed({
                             dialog.dismiss()
                         }, delayedTime)
+                    }
+
+                } else {
+                    val dialog = showFailedDialog("Failed to addd database")
+                    Handler().postDelayed({
+                        dialog.dismiss()
+                        finish()
+                    }, delayedTime)
                 }
+            }
+        }
 
+        private fun showSuccessDialog(s: String): Any {
+            return AlertDialog.Builder(this)
+                .setTitle("Success")
+                .setMessage(desc)
+                .show()
+        }
+
+        private fun showFailedDialog(s: String): AlertDialog {
+            return AlertDialog.Builder(this)
+                .setTitle("Failed")
+                .setMessage(desc)
+                .show()
+        }
+
+        private fun checkIsDateFilled(isDateFilled: Boolean) {
+            if (isDateFilled) {
+                binding.btnAddDateTask.background =
+                    ContextCompat.getDrawable(this, R.drawable.bg_btn_add_date_task)
+                binding.btnAddDateTask.setPadding(24, 24, 24, 24)
+                binding.btnRemoveDateTask.visibility = View.VISIBLE
             } else {
-                val dialog = showFailedDialog("Failed to addd database")
-                Handler().postDelayed({
-                    dialog.dismiss()
-                    finish()
-                }, delayedTime)
+                binding.btnAddDateTask.setBackgroundResource(0)
+                binding.btnAddDateTask.setPadding(0, 0, 0, 0)
+                binding.btnRemoveDateTask.visibility = View.GONE
             }
-        }
-    }
 
-    private fun showSuccessDialog(s: String): Any {
-        return AlertDialog.Builder(this)
-            .setTitle("Success")
-            .setMessage(desc)
-            .show()
-    }
-
-    private fun showFailedDialog(s: String): AlertDialog {
-        return AlertDialog.Builder(this)
-            .setTitle("Failed")
-            .setMessage(desc)
-            .show()
-    }
-
-    private fun checkIsDateFilled(isDateFilled: Boolean) {
-        if(isDateFilled) {
-            binding.btnAddDateTask.background = ContextCompat.getDrawable(this, R.drawable.bg_btn_add_date_task)
-            binding.btnAddDateTask.setPadding(24, 24, 24, 24)
-            binding.btnRemoveDateTask.visibility = View.VISIBLE
-        } else {
-            binding.btnAddDateTask.setBackgroundResource(0)
-            binding.btnAddDateTask.setPadding(0, 0, 0, 0)
-            binding.btnRemoveDateTask.visibility = View.GONE
         }
 
-    }
+        private fun setupActionBar() {
+            setSupportActionBar(binding.tbNewTask)
+            supportActionBar?.title = ""
+            supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        }
 
-    private fun setupActionBar() {
-        setSupportActionBar(binding.tbNewTask)
-        supportActionBar?.title = ""
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.new_task_menu, menu)
-        return super.onCreateOptionsMenu(menu)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when(item.itemId) {
-            R.id.action_remove_task -> {
-                toast("Remove Task")
+        override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+            if (isEdit) {
+                menuInflater.inflate(R.menu.new_task_menu, menu)
             }
+            return super.onCreateOptionsMenu(menu)
         }
-        return super.onOptionsItemSelected(item)
+
+        override fun onOptionsItemSelected(item: MenuItem): Boolean {
+            when (item.itemId) {
+                R.id.action_remove_task -> {
+                    toast("Remove Task")
+                }
+            }
+            return super.onOptionsItemSelected(item)
+        }
     }
 }

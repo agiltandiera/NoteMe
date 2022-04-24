@@ -1,7 +1,6 @@
 package com.tandiera.project.noteme.adapter
 
 import android.graphics.Paint
-import android.text.Layout
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,6 +13,7 @@ import com.tandiera.project.noteme.model.Tasks
 class TaskAdapter : RecyclerView.Adapter<TaskAdapter.ViewHolder>() {
 
     private var tasks = mutableListOf<Task>()
+    private lateinit var listener : (Task) -> Unit
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding = ItemTaskBinding
@@ -24,7 +24,7 @@ class TaskAdapter : RecyclerView.Adapter<TaskAdapter.ViewHolder>() {
     override fun getItemCount(): Int = tasks.size
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(tasks[position])
+        holder.bind(tasks[position], listener)
     }
 
     fun setData(it: List<Tasks>) {
@@ -32,11 +32,16 @@ class TaskAdapter : RecyclerView.Adapter<TaskAdapter.ViewHolder>() {
         notifyDataSetChanged()
     }
 
+    fun onClick(listener: (Task) -> Unit) {
+        this.listener = listener
+    }
+
     inner class ViewHolder(val binding: ItemTaskBinding)
         : RecyclerView.ViewHolder(binding.root) {
-        fun bind(task: Task) {
+        fun bind(task: Task, listener: (Task) -> Unit) {
             binding.tvTitleTask.text = task.mainTask?.title
 //            itemView.tvTitleTask.text = task.mainTask?.title
+            val subTaskAdapter = SubTaskAdapter()
 
             if(task.mainTask?.isComplete!!) {
                 completeTask()
@@ -53,7 +58,6 @@ class TaskAdapter : RecyclerView.Adapter<TaskAdapter.ViewHolder>() {
 
             if(task.subTask != null) {
                 showSubTasks()
-                val subTaskAdapter = SubTaskAdapter()
                 subTaskAdapter.setData(task.subTask)
 
                binding.rvSubTask.adapter = subTaskAdapter
@@ -72,6 +76,13 @@ class TaskAdapter : RecyclerView.Adapter<TaskAdapter.ViewHolder>() {
                 }
             }
 
+            itemView.setOnClickListener{
+                listener(task)
+                itemClickListener.onClick(tasks)
+            }
+            subTaskAdapter.onClick {
+                listener(task)
+            }
         }
 
         private fun completeTask() {

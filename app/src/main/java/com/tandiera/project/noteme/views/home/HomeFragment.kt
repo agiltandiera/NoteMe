@@ -5,11 +5,15 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import com.tandiera.project.noteme.adapter.TaskAdapter
 import com.tandiera.project.noteme.databinding.FragmentHomeBinding
 import com.tandiera.project.noteme.db.DbSubTaskHelper
 import com.tandiera.project.noteme.db.DbTaskHelper
+import com.tandiera.project.noteme.model.Task
 import com.tandiera.project.noteme.repository.TaskRepository
+import com.tandiera.project.noteme.views.newtask.NewTaskActivity
+import com.tandiera.project.noteme.views.newtask.NewTaskActivity.Companion.EXTRA_TASK
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -29,6 +33,7 @@ class HomeFragment : Fragment() {
 
     private lateinit var dbTaskHelper: DbTaskHelper
     private lateinit var dbSubTaskHelper: DbSubTaskHelper
+    private lateinit var taskAdapter : TaskAdapter
 
     //private lateinit var taskAdapter: TaskAdapter
 
@@ -53,6 +58,13 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         setup()
+        onClick()
+    }
+
+    private fun onClick() {
+        taskAdapter.onClick {
+            context?.startActivity<NewTaskActivity>(EXTRA_TASK to it)
+        }
     }
 
     override fun onResume() {
@@ -65,7 +77,6 @@ class HomeFragment : Fragment() {
 
         if(tasks != null && tasks.isNotEmpty()) {
             showTasks()
-            val taskAdapter = TaskAdapter()
             taskAdapter.setData(tasks)
 
             binding.rvTask.adapter = taskAdapter
@@ -77,6 +88,7 @@ class HomeFragment : Fragment() {
     private fun setup() {
         dbTaskHelper = DbTaskHelper.getInstance(context)
         dbSubTaskHelper = DbSubTaskHelper.getInstance(context)
+        taskAdapter = TaskAdapter()
     }
 
     private fun hideTasks() {
