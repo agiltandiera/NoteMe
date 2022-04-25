@@ -7,13 +7,19 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tandiera.project.noteme.R
 import com.tandiera.project.noteme.databinding.ItemTaskBinding
+import com.tandiera.project.noteme.db.DbSubTaskHelper
+import com.tandiera.project.noteme.db.DbTaskHelper
+import com.tandiera.project.noteme.model.SubTask
 import com.tandiera.project.noteme.model.Task
 import com.tandiera.project.noteme.model.Tasks
+import java.util.logging.Handler
 
-class TaskAdapter : RecyclerView.Adapter<TaskAdapter.ViewHolder>() {
+class TaskAdapter(
+    val dbTaskHelper: DbTaskHelper,
+    val dbSubTaskHelper: DbSubTaskHelper) : RecyclerView.Adapter<TaskAdapter.ViewHolder>() {
 
     private var tasks = mutableListOf<Task>()
-    private lateinit var listener : (Task) -> Unit
+    private var listener : ((Task) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding = ItemTaskBinding
@@ -24,12 +30,18 @@ class TaskAdapter : RecyclerView.Adapter<TaskAdapter.ViewHolder>() {
     override fun getItemCount(): Int = tasks.size
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(tasks[position], listener)
+        holder.bind(tasks[position], listener, dbTaskHelper, dbSubTaskHelper)
     }
 
     fun setData(it: List<Tasks>) {
-        this.tasks = tasks
+        this.tasks = tasks as MutableList<Task>
         notifyDataSetChanged()
+    }
+
+    fun deleteData(position: Int) {
+        tasks.removeAt(position)
+        notifyItemRemoved(position)
+        notifyItemRangeChanged(position, tasks.size)
     }
 
     fun onClick(listener: (Task) -> Unit) {
@@ -38,7 +50,12 @@ class TaskAdapter : RecyclerView.Adapter<TaskAdapter.ViewHolder>() {
 
     inner class ViewHolder(val binding: ItemTaskBinding)
         : RecyclerView.ViewHolder(binding.root) {
-        fun bind(task: Task, listener: (Task) -> Unit) {
+        fun bind(
+            task: Task,
+            listener: ((Task) -> Unit)? = null,
+            dbTaskHelper: DbTaskHelper,
+            dbSubTaskHelper: DbSubTaskHelper
+        ) {
             binding.tvTitleTask.text = task.mainTask?.title
 //            itemView.tvTitleTask.text = task.mainTask?.title
             val subTaskAdapter = SubTaskAdapter()
@@ -68,20 +85,61 @@ class TaskAdapter : RecyclerView.Adapter<TaskAdapter.ViewHolder>() {
 
             binding.btnDoneTask.setOnClickListener {
                 if(task.mainTask?.isComplete!!) {
-                    isCompleteTask()
                     task.mainTask?.isComplete = false
+                    val result = dbTaskHelper.updateTask(task.mainTask)
+                    if(result > 0) {
+                        isCompleteTask()
+                        Handler().postDelayed({
+                            deleteDataTask(adapterPosition)
+                        }, 500)
+                        if(task.subTask != null) {
+                            var isSuccess = false
+                            for(subTask: SubTask in task.subTask!!) {
+                                subTask.isComplete = false
+                                val resultSubTask = dbSubTaskHelper.updateSubTask(subTask)
+                                if(resultSubTask > 0) {
+                                    isSuccess = true
+                                }
+                            }
+                            if(isSuccess) {
+                                subTaskAdapter.setData(task.subTask!!)
+                            }
+                        }
+                    }
                 } else {
-                    completeTask()
                     task.mainTask.isComplete = true
+                    val result = dbTaskHelper.updateTask(task.mainTask)
+                    if(result > 0) {
+                        completeTask()
+                        Handler().postDelayed({
+                            deleteDataTask(adapterPosition)
+                        }, 500)
+                        if(task.subTask != null) {
+                            var isSuccess = false
+                            for(subTask: SubTask in task.subTask!!) {
+                                subTask.isComplete = true
+                                val resultSubTask = dbSubTaskHelper.updateSubTask(subTask)
+                                if(resultSubTask > 0) {
+                                    isSuccess = true
+                                }
+                            }
+                            if(isSuccess) {
+                                subTaskAdapter.setData(task.subTask!!)
+                            }
+                        }
+                    }
                 }
             }
 
             itemView.setOnClickListener{
-                listener(task)
-                itemClickListener.onClick(tasks)
+                if(listener != null) {
+                    listener(task)
+                }
             }
             subTaskAdapter.onClick {
-                listener(task)
+                if (listener != null) {
+                    listener(task)
+                }
             }
         }
 
