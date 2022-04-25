@@ -6,7 +6,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".views.taskcomplete.TaskCompleteFragment">
 
-
     <include
         android:id="@+id/layoutEmptyTaskComplete"
         layout="@layout/layout_empty_complete_task"
@@ -66,6 +65,7 @@
                 android:clipToPadding="false"
                 tools:listitem="@layout/item_task"
                 android:visibility="gone"
+                app:layout_constraintVertical_bias="0.0"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 android:layout_marginBottom="80dp"
                 app:layout_constraintStart_toStartOf="parent"

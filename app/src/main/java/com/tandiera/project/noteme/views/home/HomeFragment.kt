@@ -5,12 +5,10 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import com.tandiera.project.noteme.adapter.TaskAdapter
 import com.tandiera.project.noteme.databinding.FragmentHomeBinding
 import com.tandiera.project.noteme.db.DbSubTaskHelper
 import com.tandiera.project.noteme.db.DbTaskHelper
-import com.tandiera.project.noteme.model.Task
 import com.tandiera.project.noteme.repository.TaskRepository
 import com.tandiera.project.noteme.views.newtask.NewTaskActivity
 import com.tandiera.project.noteme.views.newtask.NewTaskActivity.Companion.EXTRA_TASK
@@ -88,7 +86,7 @@ class HomeFragment : Fragment() {
     private fun setup() {
         dbTaskHelper = DbTaskHelper.getInstance(context)
         dbSubTaskHelper = DbSubTaskHelper.getInstance(context)
-        taskAdapter = TaskAdapter()
+        taskAdapter = TaskAdapter(dbTaskHelper, dbSubTaskHelper)
     }
 
     private fun hideTasks() {
