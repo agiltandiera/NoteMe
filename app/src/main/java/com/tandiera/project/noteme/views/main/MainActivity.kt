@@ -3,6 +3,7 @@ package com.tandiera.project.noteme.views.main
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.fragment.app.Fragment
+import com.tandiera.project.noteme.views.taskcomplete.TaskCompleteFragment
 import com.tandiera.project.noteme.R
 import com.tandiera.project.noteme.databinding.ActivityMainBinding
 import com.tandiera.project.noteme.views.home.HomeFragment
@@ -19,6 +20,10 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         setupBottomNavigation()
+        onClick()
+    }
+
+    private fun onClick() {
         binding.btnAddTask.setOnClickListener {
             startActivity<NewTaskActivity>()
         }
@@ -32,12 +37,14 @@ class MainActivity : AppCompatActivity() {
                     return@setOnItemSelectedListener true
                 }
                 R.id.action_taskComplete -> {
-//                    openFragment(TaskCompleteFragment())
-//                    return@setOnItemSelectedListener true
+                    openFragment(TaskCompleteFragment())
+                    return@setOnItemSelectedListener true
                 }
             }
             return@setOnItemSelectedListener false
         }
+
+        binding.btmNavMain.selectedItemId = R.id.action_home
     }
 
     private fun openFragment(fragment : Fragment) {

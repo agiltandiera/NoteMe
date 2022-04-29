@@ -10,4 +10,10 @@
     <string name="title">Title</string>
     <string name="enter_title">Enter Title...</string>
     <string name="remove_task">Remove Task</string>
+    <string name="sucess_update_data_to_database">Task successfully updated</string>
+    <string name="failed_update_data_to_database">Task unsuccessfully updated</string>
+    <string name="failed_add_data_to_database">Task unsuccessfully added</string>
+    <string name="sucess_add_data_to_database">Task successfully added</string>
+    <string name="required_field">Required Field</string>
+    <string name="update">Update</string>
 </resources>

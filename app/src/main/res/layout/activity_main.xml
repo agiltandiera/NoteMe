@@ -18,7 +18,7 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         app:menu="@menu/main_menu"
-        android:background="@color/white"
+        android:background="@android:color/white"
         app:itemIconTint="@drawable/bottom_navigation_colored"
         app:itemTextColor="@drawable/bottom_navigation_colored"
         app:layout_constraintBottom_toBottomOf="parent"/>
@@ -29,6 +29,7 @@
         android:layout_height="wrap_content"
         android:background="@android:color/transparent"
         android:src="@drawable/ic_add"
+        app:tint="@color/secondaryColorPrimaryDark"
         android:elevation="8dp"
         app:layout_constraintStart_toStartOf="@id/btmNavMain"
         app:layout_constraintEnd_toEndOf="@id/btmNavMain"

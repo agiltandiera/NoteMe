@@ -6,21 +6,32 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".views.taskcomplete.TaskCompleteFragment">
 
-    <include
+    <LinearLayout
         android:id="@+id/layoutEmptyTaskComplete"
-        layout="@layout/layout_empty_complete_task"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:gravity="center_vertical">
+
+        <include
+            layout="@layout/layout_empty_complete_task"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </LinearLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_deleteTaskComplete"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:backgroundTint="@color/white"
+        android:backgroundTint="@android:color/white"
         android:layout_margin="16dp"
         android:src="@drawable/ic_delete"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -51,7 +62,7 @@
                 android:text="My Complete Task"
                 android:textStyle="bold"
                 android:textSize="32sp"
-                android:textColor="@color/white"
+                android:textColor="@android:color/white"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 android:layout_marginTop="16dp"

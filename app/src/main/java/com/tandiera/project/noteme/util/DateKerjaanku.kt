@@ -5,10 +5,10 @@ import android.content.Context
 import java.text.SimpleDateFormat
 import java.util.*
 
-object DateKerjakaanku {
+object DateKerjaanku {
 
-    fun showDatePicker(context: Context, onDateSetListener: DatePickerDialog.OnDateSetListener) {
-        // get current date
+    fun showDatePicker(context: Context, onDateSetListener: DatePickerDialog.OnDateSetListener){
+        //Get current date
         val c = Calendar.getInstance()
         val year = c.get(Calendar.YEAR)
         val month = c.get(Calendar.MONTH)
@@ -17,7 +17,7 @@ object DateKerjakaanku {
         DatePickerDialog(context, onDateSetListener, year, month, day).show()
     }
 
-    fun dateFromatSql(year: Int, month: Int, dayOfMonth: Int): String {
+    fun dateFormatSql(year: Int, month: Int, dayOfMonth: Int): String{
         return "$year-$month-$dayOfMonth"
     }
 

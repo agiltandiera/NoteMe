@@ -4,7 +4,6 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import com.tandiera.project.noteme.R
 import com.tandiera.project.noteme.databinding.ActivitySplashBinding
 import com.tandiera.project.noteme.views.main.MainActivity
 import org.jetbrains.anko.startActivity

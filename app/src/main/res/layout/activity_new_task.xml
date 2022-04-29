@@ -63,6 +63,8 @@
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
                 android:hint="@string/add_details"
+                android:textSize="16sp"
+                android:textStyle="bold"
                 android:inputType="textMultiLine"
                 android:layout_marginTop="20dp"
                 android:layout_marginStart="16dp"
@@ -80,22 +82,23 @@
                 app:layout_constraintTop_toTopOf="@id/btnAddDateTask"
                 app:layout_constraintBottom_toBottomOf="@id/btnAddDateTask"/>
 
-            <Button
+            <TextView
                 android:id="@+id/btnAddDateTask"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="16dp"
                 android:background="@android:color/transparent"
-                android:minHeight="20dp"
                 android:hint="@string/add_date"
-                android:textAllCaps="false"
-                android:textColor="@android:color/darker_gray"
                 android:textSize="16sp"
                 android:textStyle="bold"
+                android:minHeight="20dp"
                 android:textAlignment="textStart"
-                android:layout_marginTop="20dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
+                android:textAllCaps="false"
+                android:textColor="@android:color/black"
                 app:layout_constraintEnd_toStartOf="@id/btnRemoveDateTask"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toEndOf="@id/imageViewDate"
                 app:layout_constraintTop_toBottomOf="@+id/etAddDetailsTask" />
 
@@ -103,13 +106,13 @@
                 android:id="@+id/btnRemoveDateTask"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_baseline_close_24"
-                app:tint="@android:color/darker_gray"
                 android:background="@android:color/transparent"
+                android:src="@drawable/ic_baseline_close_24"
                 android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="@id/btnAddDateTask"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@id/btnAddDateTask"
-                app:layout_constraintBottom_toBottomOf="@id/btnAddDateTask"/>
+                app:tint="@android:color/darker_gray" />
 
             <ImageView
                 android:id="@+id/imageViewSubTask"
@@ -125,19 +128,21 @@
                 android:id="@+id/rvAddSubTask"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
                 android:layout_marginStart="16dp"
+                android:layout_marginTop="20dp"
+                tools:itemCount="4"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                tools:listitem="@layout/item_add_sub_task"
-                app:layout_constraintStart_toEndOf="@id/imageViewSubTask"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/btnAddDateTask"/>
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toEndOf="@id/imageViewSubTask"
+                app:layout_constraintTop_toBottomOf="@id/btnAddDateTask"
+                tools:listitem="@layout/item_add_sub_task" />
 
-            <Button
+            <TextView
                 android:id="@+id/btnAddSubTask"
                 android:layout_width="wrap_content"
                 android:layout_height="20dp"
-                android:text="@string/add_sub_task"
+                android:text="add sub task"
                 android:background="@android:color/transparent"
                 android:textAllCaps="false"
                 android:layout_marginTop="10dp"
@@ -162,8 +167,7 @@
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
         android:background="@drawable/bg_submit_task"
-        android:textColor="@color/secondaryColorPrimaryDark"
-        android:drawableStart="@drawable/ic_done_secondary_color_primary_dark_24"
+        android:textColor="@android:color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>
 

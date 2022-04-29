@@ -11,22 +11,22 @@ import com.tandiera.project.noteme.db.DbContract.MySubTask.Companion.SUB_TASK_TI
 import com.tandiera.project.noteme.db.DbContract.MySubTask.Companion.TABLE_SUB_TASK
 import com.tandiera.project.noteme.model.SubTask
 
-class DbSubTaskHelper(context: Context?) {
-    companion object {
-        private const val TABLE_NAME =TABLE_SUB_TASK
+class DbSubTaskHelper(context: Context?){
+    companion object{
+        private const val TABLE_NAME = TABLE_SUB_TASK
         private lateinit var dbHelper: DbHelper
         private lateinit var database: SQLiteDatabase
-        private var instance : DbSubTaskHelper? = null
+        private var instance: DbSubTaskHelper? = null
 
-        fun getInstance(context: Context?): DbSubTaskHelper {
-            if(instance == null) {
-                synchronized(SQLiteOpenHelper::class) {
-                    if(instance == null) {
+        fun getInstance(context: Context?): DbSubTaskHelper{
+            if (instance == null){
+                synchronized(SQLiteOpenHelper::class){
+                    if (instance == null){
                         instance = DbSubTaskHelper(context)
                     }
                 }
             }
-            return  instance as DbSubTaskHelper
+            return instance as DbSubTaskHelper
         }
     }
 
@@ -34,68 +34,70 @@ class DbSubTaskHelper(context: Context?) {
         dbHelper = DbHelper(context)
     }
 
-    private fun open() {
+    private fun open(){
         database = dbHelper.writableDatabase
     }
 
-    private fun close() {
+    private fun close(){
         dbHelper.close()
-        if (database.isOpen) {
+
+        if (database.isOpen){
             database.close()
         }
     }
 
-    fun insert(subTask: SubTask?) {
+    fun insert(subTask: SubTask?): Long {
         open()
         val values = ContentValues()
-        values.put(SUB_TASK_TITLE,subTask?.title)
-        values.put(SUB_TASK_TASK_ID,subTask?.idTask)
-        values.put(SUB_TASK_IS_COMPLETE,subTask?.title)
+        values.put(SUB_TASK_TITLE, subTask?.title)
+        values.put(SUB_TASK_TASK_ID, subTask?.idTask)
+        values.put(SUB_TASK_IS_COMPLETE, subTask?.isComplete)
 
         val result = database.insert(TABLE_NAME, null, values)
         close()
         return result
     }
 
-    fun getAllSubTask(idTask: Int?) {
+    fun getAllSubTask(idTask: Int?): List<SubTask>?{
         open()
         val subTasks = mutableListOf<SubTask>()
         val query = "SELECT * FROM $TABLE_NAME WHERE $SUB_TASK_TASK_ID = $idTask"
         val cursor = database.rawQuery(query, null)
 
-        if (cursor != null) {
-            while (cursor.moveToNext()) {
+        if (cursor != null){
+            while (cursor.moveToNext()){
                 val id = cursor.getInt(cursor.getColumnIndexOrThrow(SUB_TASK_ID))
                 val idTaskSubTask = cursor.getInt(cursor.getColumnIndexOrThrow(SUB_TASK_TASK_ID))
                 val title = cursor.getString(cursor.getColumnIndexOrThrow(SUB_TASK_TITLE))
-                val isComplete =
-                    cursor.getString(cursor.getColumnIndexOrThrow(SUB_TASK_IS_COMPLETE))
+                val isComplete = cursor.getInt(cursor.getColumnIndexOrThrow(SUB_TASK_IS_COMPLETE))
                 var isCompleteSubTask: Boolean
                 isCompleteSubTask = isComplete == 1
 
                 subTasks.add(SubTask(id, idTask, title, isCompleteSubTask))
             }
-        } else {
+        }else{
             return null
         }
         cursor.close()
         close()
+        return subTasks
     }
 
-    fun updateSubTask(subTask: SubTask?) : Int {
+    fun updateSubTask(subTask: SubTask?): Int{
+        open()
         val values = ContentValues()
-        values.put(SUB_TASK_TITLE,subTask?.title)
-        values.put(SUB_TASK_TASK_ID,subTask?.idTask)
-        values.put(SUB_TASK_IS_COMPLETE,subTask?.title)
+        values.put(SUB_TASK_TITLE, subTask?.title)
+        values.put(SUB_TASK_TASK_ID, subTask?.idTask)
+        values.put(SUB_TASK_IS_COMPLETE, subTask?.isComplete)
 
-        val result = database.update(TABLE_NAME, null, values, "$SUB_TASK_ID = ${subTask?.id}", null)
+        val result = database.update(TABLE_NAME, values, "$SUB_TASK_ID = ${subTask?.id}", null)
         close()
         return result
     }
 
     fun deleteSubTask(id: Int): Int {
         open()
-        val result = database.delete(TABLE_NAME, "$SUB_TASK_ID = $id")
+        val result = database.delete(TABLE_NAME, "$SUB_TASK_ID = $id", null)
         close()
         return result
     }
