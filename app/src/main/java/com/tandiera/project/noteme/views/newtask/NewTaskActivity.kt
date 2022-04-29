@@ -2,8 +2,6 @@ package com.tandiera.project.noteme.views.newtask
 
 import android.app.AlertDialog
 import android.app.DatePickerDialog
-import android.app.Dialog
-import android.content.DialogInterface
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
@@ -11,7 +9,6 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import com.tandiera.project.noteme.model.SubTask
-import android.widget.DatePicker
 import androidx.core.content.ContextCompat
 import com.tandiera.project.noteme.R
 import com.tandiera.project.noteme.adapter.AddSubTaskAdapter
@@ -20,53 +17,53 @@ import com.tandiera.project.noteme.db.DbSubTaskHelper
 import com.tandiera.project.noteme.db.DbTaskHelper
 import com.tandiera.project.noteme.model.MainTask
 import com.tandiera.project.noteme.model.Task
-import com.tandiera.project.noteme.util.DateKerjakaanku
-import org.jetbrains.anko.toast
+import com.tandiera.project.noteme.util.DateKerjaanku
 
 class NewTaskActivity : AppCompatActivity() {
 
-    companion object {
-        const val EXTRA_TASK = "extra_task"
-    }
+        companion object {
+            const val EXTRA_TASK = "extra_task"
+        }
 
-    private lateinit var addSubTaskAdapter: AddSubTaskAdapter
-    private lateinit var dbTaskHelper: DbTaskHelper
-    private lateinit var dbSubTaskHelper: DbTaskHelper
-    private var isEdit = false
-    private var delayedTime: Long = 1200
-    private var task: Task? = null
+        private lateinit var binding: ActivityNewTaskBinding
 
-    private lateinit var binding: ActivityNewTaskBinding
+        private lateinit var addSubTaskAdapter: AddSubTaskAdapter
+        private lateinit var dbTaskHelper: DbTaskHelper
+        private lateinit var dbSubTaskHelper: DbSubTaskHelper
+        private var isEdit = false
+        private var delayedTime: Long = 1200
+        private var task: Task? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        binding = ActivityNewTaskBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        override fun onCreate(savedInstanceState: Bundle?) {
+            super.onCreate(savedInstanceState)
+            binding = ActivityNewTaskBinding.inflate(layoutInflater)
+            setContentView(binding.root)
 
-        setup()
-        setupActionBar()
-        setupAddSubTaskAdapter()
-        onClick()
-    }
+            setup()
+            setupActionBar()
+            setupAddSubTaskAdapter()
+            onClick()
+        }
 
     private fun setup() {
         dbTaskHelper = DbTaskHelper.getInstance(this)
         dbSubTaskHelper = DbSubTaskHelper.getInstance(this)
+        addSubTaskAdapter = AddSubTaskAdapter(dbSubTaskHelper)
 
         getDataExtra()
     }
 
     private fun getDataExtra() {
-        if(intent != null) {
+        if(intent != null){
             task = intent.getParcelableExtra(EXTRA_TASK)
         }
-        if (task != null) {
+        if (task != null){
             isEdit = true
-            binding.btnSubmitTask.text = "Update"
+            binding.btnSubmitTask.text = getString(R.string.update)
 
             setupView(task)
-        } else {
-            task = Task(mainTask = MainTask)
+        }else{
+            task = Task(mainTask = MainTask())
         }
     }
 
@@ -74,15 +71,15 @@ class NewTaskActivity : AppCompatActivity() {
         binding.etTitleTask.setText(task?.mainTask?.title)
         binding.etAddDetailsTask.setText(task?.mainTask?.details)
         val dateString = task?.mainTask?.date
-        binding.btnAddDateTask.text = DateKerjakaanku.dateFromSqlToDateViewTask(dateString.toString)
 
-        if(task?.mainTask?.date!!.isNotEmpty()) {
+        if (dateString != null){
+            binding.btnAddDateTask.text = DateKerjaanku.dateFromSqlToDateViewTask(dateString)
             checkIsDateFilled(true)
         }
     }
 
     private fun setupAddSubTaskAdapter() {
-        addSubTaskAdapter = AddSubTaskAdapter()
+        task?.subTask?.let { addSubTaskAdapter.setData(it) }
         binding.rvAddSubTask.adapter = addSubTaskAdapter
     }
 
@@ -92,11 +89,10 @@ class NewTaskActivity : AppCompatActivity() {
         }
 
         binding.btnAddDateTask.setOnClickListener {
-            DateKerjakaanku.showDatePicker(this,
+            DateKerjaanku.showDatePicker(this,
                 DatePickerDialog.OnDateSetListener { _, year, month, dayOfMonth ->
-                    val dateString = DateKerjakaanku.dateFromatSql(year, month, dayOfMonth)
-                    binding.btnAddDateTask.text =
-                        DateKerjakaanku.dateFromSqlToDateViewTask(dateString)
+                    val dateString = DateKerjaanku.dateFormatSql(year, month, dayOfMonth)
+                    binding.btnAddDateTask.text = DateKerjaanku.dateFromSqlToDateViewTask(dateString)
 
                     task?.mainTask?.date = dateString
                     checkIsDateFilled(true)
@@ -121,153 +117,159 @@ class NewTaskActivity : AppCompatActivity() {
     private fun submitDataToDatabase() {
         val titleTask = binding.etTitleTask.text.toString()
         val detailTask = binding.etAddDetailsTask.text.toString()
-        val dataSubTask = addSubTaskAdapter.getData()
+        val dataSubTasks = addSubTaskAdapter.getData()
 
-        if (titleTask.isEmpty()) {
-            binding.etTitleTask.error = "Please field you title"
+        if (titleTask.isEmpty()){
+            binding.etTitleTask.error = getString(R.string.required_field)
             binding.etTitleTask.requestFocus()
             return
         }
 
         task?.mainTask?.title = titleTask
-        if (detailTask.isNotEmpty()) {
+
+        if (detailTask.isNotEmpty()){
             task?.mainTask?.details = detailTask
         }
 
-        if (isEdit) {
+        if (isEdit){
             val result = dbTaskHelper.updateTask(task?.mainTask)
-            if (result > 0) {
-                if (dataSubTask != null && dataSubTask.isNotEmpty()) {
+            if (result > 0){
+                if (dataSubTasks != null && dataSubTasks.isNotEmpty()){
                     var isSuccess = false
-                    for (subTask: SubTask in dataSubTask) {
-                        if(subTask.id != null) {
+                    for (subTask: SubTask in dataSubTasks){
+                        if (subTask.id != null){
                             val resultSubTask = dbSubTaskHelper.updateSubTask(subTask)
                             isSuccess = resultSubTask > 0
-                        } else {
+                        }else{
                             subTask.idTask = task?.mainTask?.id
                             val resultSubTask = dbSubTaskHelper.insert(subTask)
                             isSuccess = resultSubTask > 0
                         }
                     }
-                    if (isSuccess) {
-                        val dialog = showSuccessDialog("success add database")
+                    if (isSuccess){
+                        val dialog = showSuccessDialog(getString(R.string.sucess_update_data_to_database))
                         Handler().postDelayed({
-                            dialog.dismiss
+                            dialog.dismiss()
                         }, 1200)
-                    } else {
-                        val dialog = showFailedDialog("Failed to addd database")
+                    }else{
+                        val dialog = showFailedDialog(getString(R.string.failed_update_data_to_database))
                         Handler().postDelayed({
                             dialog.dismiss()
                         }, delayedTime)
                     }
-
-                } else {
-                    val dialog = showFailedDialog("Failed to addd database")
-                    Handler().postDelayed({
-                        dialog.dismiss()
-                        finish()
-                    }, delayedTime)
                 }
+                val dialog = showSuccessDialog(getString(R.string.sucess_update_data_to_database))
+                Handler().postDelayed({
+                    dialog.dismiss()
+                    finish()
+                }, 1200)
+            }else{
+                val dialog = showFailedDialog(getString(R.string.failed_update_data_to_database))
+                Handler().postDelayed({
+                    dialog.dismiss()
+                }, delayedTime)
             }
-        } else {
+        }else {
             val result = dbTaskHelper.insert(task?.mainTask)
-            if (result > 0) {
-                if (dataSubTask != null && dataSubTask.isNotEmpty()) {
+            if (result > 0){
+                if (dataSubTasks != null && dataSubTasks.isNotEmpty()){
                     var isSuccess = false
-                    for (subTask: SubTask in dataSubTask) {
+                    for (subTask: SubTask in dataSubTasks){
                         subTask.idTask = result.toInt()
                         val resultSubTask = dbSubTaskHelper.insert(subTask)
                         isSuccess = resultSubTask > 0
                     }
-                    if (isSuccess) {
-                        val dialog = showSuccessDialog("success add database")
+                    if (isSuccess){
+                        val dialog = showSuccessDialog(getString(R.string.sucess_add_data_to_database))
                         Handler().postDelayed({
-                            dialog.dismiss
+                            dialog.dismiss()
                         }, 1200)
-                    } else {
-                        val dialog = showFailedDialog("Failed to addd database")
+                    }else{
+                        val dialog = showFailedDialog(getString(R.string.failed_add_data_to_database))
                         Handler().postDelayed({
                             dialog.dismiss()
                         }, delayedTime)
                     }
-
-                } else {
-                    val dialog = showFailedDialog("Failed to addd database")
-                    Handler().postDelayed({
-                        dialog.dismiss()
-                        finish()
-                    }, delayedTime)
                 }
+                val dialog = showSuccessDialog(getString(R.string.sucess_add_data_to_database))
+                Handler().postDelayed({
+                    dialog.dismiss()
+                    finish()
+                }, 1200)
+            }else{
+                val dialog = showFailedDialog(getString(R.string.failed_add_data_to_database))
+                Handler().postDelayed({
+                    dialog.dismiss()
+                }, delayedTime)
             }
         }
+    }
 
-        private fun showSuccessDialog(s: String): Any {
-            return AlertDialog.Builder(this)
-                .setTitle("Success")
-                .setMessage(desc)
-                .show()
+    private fun showSuccessDialog(desc: String): AlertDialog {
+        return AlertDialog.Builder(this)
+            .setTitle("Success")
+            .setMessage(desc)
+            .show()
+    }
+
+    private fun showFailedDialog(desc: String): AlertDialog {
+        return AlertDialog.Builder(this)
+            .setTitle("Failed")
+            .setMessage(desc)
+            .show()
+    }
+
+    private fun checkIsDateFilled(isDateFilled: Boolean) {
+        if(isDateFilled){
+            binding.btnAddDateTask.background = ContextCompat.getDrawable(this, R.drawable.bg_btn_add_date_task)
+            binding.btnAddDateTask.setPadding(24, 24, 24, 24)
+            binding.btnRemoveDateTask.visibility = View.VISIBLE
+        }else{
+            binding.btnAddDateTask.setBackgroundResource(0)
+            binding.btnAddDateTask.setPadding(0, 0, 0, 0)
+            binding.btnRemoveDateTask.visibility = View.GONE
         }
+    }
 
-        private fun showFailedDialog(s: String): AlertDialog {
-            return AlertDialog.Builder(this)
-                .setTitle("Failed")
-                .setMessage(desc)
-                .show()
+    private fun setupActionBar() {
+        setSupportActionBar(binding.tbNewTask)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.title = ""
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        if (isEdit){
+            menuInflater.inflate(R.menu.new_task_menu, menu)
         }
+        return super.onCreateOptionsMenu(menu)
+    }
 
-        private fun checkIsDateFilled(isDateFilled: Boolean) {
-            if (isDateFilled) {
-                binding.btnAddDateTask.background =
-                    ContextCompat.getDrawable(this, R.drawable.bg_btn_add_date_task)
-                binding.btnAddDateTask.setPadding(24, 24, 24, 24)
-                binding.btnRemoveDateTask.visibility = View.VISIBLE
-            } else {
-                binding.btnAddDateTask.setBackgroundResource(0)
-                binding.btnAddDateTask.setPadding(0, 0, 0, 0)
-                binding.btnRemoveDateTask.visibility = View.GONE
-            }
-
-        }
-
-        private fun setupActionBar() {
-            setSupportActionBar(binding.tbNewTask)
-            supportActionBar?.title = ""
-            supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        }
-
-        override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-            if (isEdit) {
-                menuInflater.inflate(R.menu.new_task_menu, menu)
-            }
-            return super.onCreateOptionsMenu(menu)
-        }
-
-        override fun onOptionsItemSelected(item: MenuItem): Boolean {
-            when (item.itemId) {
-                R.id.action_remove_task -> {
-                    AlertDialog.Builder(this)
-                        .setTitle("Delete")
-                        .setMessage("Apakah Anda yakin akan delete data ini?")
-                        .setPositiveButton("Yes") { dialog, _ ->
-                            task?.mainTask?.id?.let {
-                                val result = dbTaskHelper.deleteTask(it)
-                                if(result>0) {
-                                    val dialogSuccess = showSuccessDialog("Data ini berhasil dihapus")
-                                    Handler().postDelayed({
-                                        dialogSuccess.dismiss()
-                                        dialog.dismiss()
-                                        finish()
-                                    }, delayedTime)
-                                }
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId){
+            R.id.action_remove_task -> {
+                AlertDialog.Builder(this)
+                    .setTitle("Delete Task")
+                    .setMessage("Are you sure want to delete?")
+                    .setPositiveButton("Yes") { dialog, _ ->
+                        task?.mainTask?.id?.let {
+                            val result = dbTaskHelper.deleteTask(it)
+                            if (result > 0){
+                                val dialogSuccess = showSuccessDialog("Task successfully deleted")
+                                Handler().postDelayed({
+                                    dialogSuccess.dismiss()
+                                    dialog.dismiss()
+                                    finish()
+                                }, delayedTime)
                             }
                         }
-                        .setNegativeButton("Tidak"), {dialog, _ ->
-                            dialog.dismiss()
-                        }.show()
-                }
-            }
+                    }
+                    .setNegativeButton("No") { dialog, _ ->
+                        dialog.dismiss()
+                    }
+                    .show()
 
-            return super.onOptionsItemSelected(item)
+            }
         }
+        return super.onOptionsItemSelected(item)
     }
 }

@@ -7,9 +7,13 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tandiera.project.noteme.R
 import com.tandiera.project.noteme.databinding.ItemSubTaskBinding
+import com.tandiera.project.noteme.db.DbSubTaskHelper
+import com.tandiera.project.noteme.db.DbTaskHelper
 import com.tandiera.project.noteme.model.SubTask
 
-class SubTaskAdapter : RecyclerView.Adapter<SubTaskAdapter.ViewHolder> () {
+class SubTaskAdapter(
+    private val dbSubTaskHelper: DbSubTaskHelper )
+    : RecyclerView.Adapter<SubTaskAdapter.ViewHolder> () {
 
     private lateinit var subTasks :  List<SubTask>
     private lateinit var listener: (View) -> Unit
@@ -35,24 +39,33 @@ class SubTaskAdapter : RecyclerView.Adapter<SubTaskAdapter.ViewHolder> () {
         this.listener = listener
     }
 
-    class ViewHolder(val binding: ItemSubTaskBinding)
+    inner class ViewHolder(private val binding: ItemSubTaskBinding)
         : RecyclerView.ViewHolder(binding.root) {
-        fun bind(subTask: SubTask, listener: (View) -> Unit) {
+        fun bind(
+            subTask: SubTask,
+            listener: (View) -> Unit
+        ) {
             binding.tvTitleSubTask.text = subTask.title
 
             if(subTask.isComplete) {
                 completeSubTask()
             } else {
-                isCompleteSubTask()
+                inCompleteSubTask()
             }
 
             binding.btnDoneSubTask.setOnClickListener {
-                if(subTask.isComplete) {
-                    isCompleteSubTask()
+                if (subTask.isComplete){
                     subTask.isComplete = false
+                    val result = dbSubTaskHelper.updateSubTask(subTask)
+                    if (result > 0){
+                        inCompleteSubTask()
+                    }
                 } else {
-                    completeSubTask()
                     subTask.isComplete = true
+                    val result = dbSubTaskHelper.updateSubTask(subTask)
+                    if (result > 0) {
+                        completeSubTask()
+                    }
                 }
             }
 
@@ -67,7 +80,7 @@ class SubTaskAdapter : RecyclerView.Adapter<SubTaskAdapter.ViewHolder> () {
             binding.tvTitleSubTask.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
         }
 
-        private fun isCompleteSubTask() {
+        private fun inCompleteSubTask() {
             binding.btnDoneSubTask.setImageResource(R.drawable.ic_done_task)
             binding.tvTitleSubTask.paintFlags = Paint.ANTI_ALIAS_FLAG
         }

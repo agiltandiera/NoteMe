@@ -9,9 +9,81 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tandiera.project.noteme.R
 import com.tandiera.project.noteme.databinding.ItemAddSubTaskBinding
+import com.tandiera.project.noteme.db.DbSubTaskHelper
 import com.tandiera.project.noteme.model.SubTask
 
-class AddSubTaskAdapter : RecyclerView.Adapter<AddSubTaskAdapter.ViewHolder>() {
+class AddSubTaskAdapter(private val dbSubTaskHelper: DbSubTaskHelper) : RecyclerView.Adapter<AddSubTaskAdapter.ViewHolder>() {
+
+    inner class ViewHolder(val binding: ItemAddSubTaskBinding)
+        : RecyclerView.ViewHolder(binding.root) {
+        fun bind(subTask: SubTask) {
+            if(subTask.title != null) {
+                binding.etTitleSubTask.setText(subTask.title)
+            }
+
+            if(subTask.isComplete) {
+                completeTask()
+            } else {
+                inCompleteTask()
+            }
+
+            binding.btnRemoveSubTask.setOnClickListener {
+                if(subTask.id != null) {
+                    val result = dbSubTaskHelper.deleteSubTask(subTask.id)
+                    if(result > 0) {
+                        deleteTask(adapterPosition)
+                    }
+                }
+            }
+
+            binding.etTitleSubTask.addTextChangedListener(object : TextWatcher {
+                override fun beforeTextChanged(
+                    s: CharSequence?,
+                    start: Int,
+                    count: Int,
+                    after: Int
+                ) {
+                }
+
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                    subTask.title = s.toString()
+                    update(subTask, adapterPosition)
+                }
+
+                override fun afterTextChanged(s: Editable?) {
+
+                }
+
+            })
+
+            binding.btnCompleteSubTask.setOnClickListener{
+                if(subTask.isComplete) {
+                    subTask.isComplete = false
+                    val result = dbSubTaskHelper.updateSubTask(subTask)
+                    if(result > 0) {
+                        inCompleteTask()
+                    }
+                } else {
+                    subTask.isComplete = true
+                    val result = dbSubTaskHelper.updateSubTask(subTask)
+                    if(result>0) {
+                        completeTask()
+                    }
+                }
+            }
+        }
+
+        private fun inCompleteTask() {
+            binding.btnCompleteSubTask.setImageResource(R.drawable.ic_done_task)
+            binding.etTitleSubTask.paintFlags = Paint.ANTI_ALIAS_FLAG
+        }
+
+        private fun completeTask() {
+            binding.btnCompleteSubTask.setImageResource(R.drawable.ic_complete_task)
+            binding.etTitleSubTask.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
+        }
+
+    }
 
     private var listAddSubTask = mutableListOf<SubTask>()
 
@@ -43,59 +115,14 @@ class AddSubTaskAdapter : RecyclerView.Adapter<AddSubTaskAdapter.ViewHolder>() {
     }
 
     fun getData(): List<SubTask>? {
-        if(listAddSubTask.size > 0) {
-            return listAddSubTask
+        return if (listAddSubTask.size > 0){
+            listAddSubTask
+        }else{
+            null
         }
-        return null
     }
 
-    inner class ViewHolder(val binding: ItemAddSubTaskBinding)
-        : RecyclerView.ViewHolder(binding.root) {
-        fun bind(subTask: SubTask) {
-            if(subTask.title != null) {
-                binding.etTitleSubTask.setText(subTask.title)
-            }
-
-            if(subTask.isComplete) {
-                completeTask()
-            } else {
-                inCompleteTask()
-            }
-
-            binding.btnRemoveSubTask.setOnClickListener {
-                deleteTask(adapterPosition)
-            }
-
-            binding.etTitleSubTask.addTextChangedListener(object : TextWatcher {
-                override fun beforeTextChanged(
-                    s: CharSequence?,
-                    start: Int,
-                    count: Int,
-                    after: Int
-                ) {
-                }
-
-                override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                    subTask.title = p0.toString()
-                    update(subTask, adapterPosition)
-                }
-
-                override fun afterTextChanged(s: Editable?) {
-
-                }
-
-            })
-        }
-
-        private fun inCompleteTask() {
-            binding.btnCompleteSubTask.setImageResource(R.drawable.ic_done_task)
-            binding.etTitleSubTask.paintFlags = Paint.ANTI_ALIAS_FLAG
-        }
-
-        private fun completeTask() {
-            binding.btnCompleteSubTask.setImageResource(R.drawable.ic_complete_task)
-            binding.etTitleSubTask.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
-        }
-
+    fun setData(subTask: List<SubTask>) {
+        listAddSubTask = subTask as MutableList<SubTask>
     }
 }

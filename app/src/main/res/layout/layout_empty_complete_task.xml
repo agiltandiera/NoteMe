@@ -13,16 +13,9 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Please complete your task"
+        android:text="Please complete your task!"
         android:textSize="16sp"
-        android:textColor="@color/black"
+        android:textColor="@android:color/black"
         android:layout_marginTop="8dp"/>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Keep the spirit to complete your task"
-        android:textColor="@color/gray"
-        android:layout_marginTop="4dp"/>
 
 </LinearLayout>

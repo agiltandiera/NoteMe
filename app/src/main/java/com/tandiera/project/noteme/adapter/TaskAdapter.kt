@@ -1,6 +1,7 @@
 package com.tandiera.project.noteme.adapter
 
 import android.graphics.Paint
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,12 +12,12 @@ import com.tandiera.project.noteme.db.DbSubTaskHelper
 import com.tandiera.project.noteme.db.DbTaskHelper
 import com.tandiera.project.noteme.model.SubTask
 import com.tandiera.project.noteme.model.Task
-import com.tandiera.project.noteme.model.Tasks
 import java.util.logging.Handler
 
 class TaskAdapter(
-    val dbTaskHelper: DbTaskHelper,
-    val dbSubTaskHelper: DbSubTaskHelper) : RecyclerView.Adapter<TaskAdapter.ViewHolder>() {
+    private val dbTaskHelper: DbTaskHelper,
+    private val dbSubTaskHelper: DbSubTaskHelper
+):  RecyclerView.Adapter<TaskAdapter.ViewHolder>() {
 
     private var tasks = mutableListOf<Task>()
     private var listener : ((Task) -> Unit)? = null
@@ -33,12 +34,12 @@ class TaskAdapter(
         holder.bind(tasks[position], listener, dbTaskHelper, dbSubTaskHelper)
     }
 
-    fun setData(it: List<Tasks>) {
+    fun setData(tasks: List<Task>) {
         this.tasks = tasks as MutableList<Task>
         notifyDataSetChanged()
     }
 
-    fun deleteData(position: Int) {
+    fun deleteDataTask(position: Int) {
         tasks.removeAt(position)
         notifyItemRemoved(position)
         notifyItemRangeChanged(position, tasks.size)
@@ -48,7 +49,12 @@ class TaskAdapter(
         this.listener = listener
     }
 
-    inner class ViewHolder(val binding: ItemTaskBinding)
+    fun deleteAllDataTask() {
+        tasks.removeAll(tasks)
+        notifyDataSetChanged()
+    }
+
+    inner class ViewHolder(private val binding: ItemTaskBinding)
         : RecyclerView.ViewHolder(binding.root) {
         fun bind(
             task: Task,
@@ -58,24 +64,32 @@ class TaskAdapter(
         ) {
             binding.tvTitleTask.text = task.mainTask?.title
 //            itemView.tvTitleTask.text = task.mainTask?.title
-            val subTaskAdapter = SubTaskAdapter()
+            val subTaskAdapter = SubTaskAdapter(dbSubTaskHelper)
 
             if(task.mainTask?.isComplete!!) {
                 completeTask()
             } else {
-                isCompleteTask()
+                inCompleteTask()
             }
 
-            if(task.mainTask?.date != null && task.mainTask.date.isNotEmpty()) {
+            if(task.mainTask!!.details != null && task.mainTask!!.details!!.isNotEmpty()) {
+                showDetailsTask()
+                binding.tvDetailTask.text = task.mainTask!!.details
+            } else {
+                hideDetailsTask()
+            }
+
+            if(task.mainTask!!.date != null && task.mainTask!!.date!!.isNotEmpty()) {
                 showDateTask()
 //                itemView.tvDateTask.text = task.mainTask.date
+                binding.tvDateTask.text = task.mainTask!!.date
             } else {
                 hideDateTask()
             }
 
             if(task.subTask != null) {
                 showSubTasks()
-                subTaskAdapter.setData(task.subTask)
+                subTaskAdapter.setData(task.subTask!!)
 
                binding.rvSubTask.adapter = subTaskAdapter
 //                itemView.rvSubTask.adapter = subTaskAdapter
@@ -84,14 +98,14 @@ class TaskAdapter(
             }
 
             binding.btnDoneTask.setOnClickListener {
-                if(task.mainTask?.isComplete!!) {
-                    task.mainTask?.isComplete = false
+                if(task.mainTask!!.isComplete!!) {
+                    task.mainTask!!.isComplete = false
                     val result = dbTaskHelper.updateTask(task.mainTask)
                     if(result > 0) {
-                        isCompleteTask()
-                        Handler().postDelayed({
-                            deleteDataTask(adapterPosition)
-                        }, 500)
+                        inCompleteTask()
+//                        Handler(Looper.getMainLooper()).postDelayed({
+//                            deleteDataTask(adapterPosition)
+//                        }, 500)
                         if(task.subTask != null) {
                             var isSuccess = false
                             for(subTask: SubTask in task.subTask!!) {
@@ -107,23 +121,23 @@ class TaskAdapter(
                         }
                     }
                 } else {
-                    task.mainTask.isComplete = true
+                    task.mainTask!!.isComplete = true
                     val result = dbTaskHelper.updateTask(task.mainTask)
-                    if(result > 0) {
+                    if (result > 0){
                         completeTask()
-                        Handler().postDelayed({
-                            deleteDataTask(adapterPosition)
-                        }, 500)
-                        if(task.subTask != null) {
+//                        Handler().postDelayed({
+//                            deleteDataTask(adapterPosition)
+//                        }, 500)
+                        if (task.subTask != null){
                             var isSuccess = false
-                            for(subTask: SubTask in task.subTask!!) {
+                            for (subTask: SubTask in task.subTask!!){
                                 subTask.isComplete = true
                                 val resultSubTask = dbSubTaskHelper.updateSubTask(subTask)
-                                if(resultSubTask > 0) {
+                                if (resultSubTask > 0){
                                     isSuccess = true
                                 }
                             }
-                            if(isSuccess) {
+                            if (isSuccess){
                                 subTaskAdapter.setData(task.subTask!!)
                             }
                         }
@@ -148,9 +162,17 @@ class TaskAdapter(
             binding.tvTitleTask.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
         }
 
-        private fun isCompleteTask() {
+        private fun inCompleteTask() {
             binding.btnDoneTask.setImageResource(R.drawable.ic_done_task)
             binding.tvTitleTask.paintFlags = Paint.ANTI_ALIAS_FLAG
+        }
+
+        private fun hideDetailsTask() {
+            binding.tvDetailTask.visibility = View.GONE
+        }
+
+        private fun showDetailsTask() {
+            binding.tvDetailTask.visibility = View.VISIBLE
         }
 
         private fun hideSubTask() {

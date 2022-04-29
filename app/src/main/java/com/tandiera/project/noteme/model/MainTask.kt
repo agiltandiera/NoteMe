@@ -6,8 +6,8 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 data class MainTask(
     val id: Int? = null,
-    var title : String? = null,
-    var details : String? = null,
-    var date : String? = null,
-    var isComplete : Boolean? = null
+    var title : String? = "",
+    var details : String? = "",
+    var date : String? = "",
+    var isComplete : Boolean? = false
 ) : Parcelable

@@ -11,12 +11,12 @@ import java.io.IOException
 
 object TaskRepository {
 
-    fun getDataTasks(context: Context) : Tasks? {
-        val json : String?
+    fun getDataTasks(context: Context?): Tasks?{
+        val json: String?
         try {
             val inputStream = context?.assets?.open("tasks.json")
-            json = inputStream?.bufferedReader().use {it?.readText()}
-        } catch (e: IOException) {
+            json = inputStream?.bufferedReader().use { it?.readText() }
+        }catch (e: IOException){
             e.printStackTrace()
             return null
         }
@@ -25,56 +25,54 @@ object TaskRepository {
     }
 
     fun getDataTaskFromDatabase(dbTaskHelper: DbTaskHelper, dbSubTaskHelper: DbSubTaskHelper)
-        : List<Task>? {
+            : List<Task>?{
         val tasks = mutableListOf<Task>()
 
-        val mainTask = dbTaskHelper.getAllTask()
+        val mainTasks = dbTaskHelper.getAllTask()
         tasks.clear()
 
-        if(mainTask != null) {
-            for(mainTask: MainTask in MainTask) {
+        if (mainTasks != null){
+            for (mainTask: MainTask in mainTasks){
                 val task = Task()
                 task.mainTask = mainTask
 
                 val subTasks = dbSubTaskHelper.getAllSubTask(mainTask.id)
-                if(subTasks != null && subTasks.isNotEmpty()) {
+                if (subTasks != null && subTasks.isNotEmpty()){
                     task.subTask = subTasks
                 }
 
                 tasks.add(task)
             }
-        } else {
+        }else{
             return null
         }
 
         return tasks
-
     }
 
     fun getDataTaskCompleteFromDatabase(dbTaskHelper: DbTaskHelper, dbSubTaskHelper: DbSubTaskHelper)
-            : List<Task>? {
+            : List<Task>?{
         val tasks = mutableListOf<Task>()
 
-        val mainTask = dbTaskHelper.getAllTaskComplete()
+        val mainTasks = dbTaskHelper.getAllTaskComplete()
         tasks.clear()
 
-        if(mainTask != null) {
-            for(mainTask: MainTask in MainTask) {
+        if (mainTasks != null){
+            for (mainTask: MainTask in mainTasks){
                 val task = Task()
                 task.mainTask = mainTask
 
                 val subTasks = dbSubTaskHelper.getAllSubTask(mainTask.id)
-                if(subTasks != null && subTasks.isNotEmpty()) {
+                if (subTasks != null && subTasks.isNotEmpty()){
                     task.subTask = subTasks
                 }
 
                 tasks.add(task)
             }
-        } else {
+        }else{
             return null
         }
 
         return tasks
-
     }
 }

@@ -3,46 +3,26 @@ package com.tandiera.project.noteme.views.taskcomplete
 import android.app.AlertDialog
 import android.os.Bundle
 import android.os.Handler
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import com.tandiera.project.noteme.adapter.TaskAdapter
 import com.tandiera.project.noteme.databinding.FragmentTaskCompleteBinding
 import com.tandiera.project.noteme.db.DbSubTaskHelper
 import com.tandiera.project.noteme.db.DbTaskHelper
-import com.tandiera.project.noteme.model.SubTask
 import com.tandiera.project.noteme.model.Task
 import com.tandiera.project.noteme.repository.TaskRepository
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [TaskCompleteFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class TaskCompleteFragment : Fragment() {
 
     private var _binding: FragmentTaskCompleteBinding? = null
     private val binding get() = _binding!!
 
-    private var tasks: List<Task>? = null
-
     private lateinit var dbTaskHelper: DbTaskHelper
     private lateinit var dbSubTaskHelper: DbSubTaskHelper
-    private lateinit var taskAdapter : TaskAdapter
-
-    private val tasks : List<Task>? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-        }
-    }
+    private lateinit var taskAdapter: TaskAdapter
+    private var tasks: List<Task>? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -50,8 +30,7 @@ class TaskCompleteFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentTaskCompleteBinding.inflate(inflater, container, false)
-        val view = binding.root
-        return view
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -64,21 +43,22 @@ class TaskCompleteFragment : Fragment() {
     private fun onClick() {
         binding.fabDeleteTaskComplete.setOnClickListener {
             AlertDialog.Builder(context)
-                .setTitle("Delete All Data")
-                .setMessage("Apakah anda yakin menghapus semua data?")
-                .setPositiveButton("Yes") { dialog, _ ->
-                    if(tasks != null) {
+                .setTitle("Delete All Tasks")
+                .setMessage("Are you sure want to delete?")
+                .setPositiveButton("Yes"){ dialog, _ ->
+                    if (tasks != null){
                         val result = dbTaskHelper.deleteAllTaskComplete()
-                        if(result > 0) {
+                        if (result > 0){
                             val dialogDeleteSuccess = showSuccessDeleteAllTaskDialog()
                             Handler().postDelayed({
                                 dialog.dismiss()
                                 dialogDeleteSuccess.dismiss()
+                                taskAdapter.deleteAllDataTask()
                             }, 1200)
                         }
                     }
                 }
-                .setNegativeButton("No") { dialog, _ ->
+                .setNegativeButton("No"){ dialog, _ ->
                     dialog.dismiss()
                 }
                 .show()
@@ -88,7 +68,7 @@ class TaskCompleteFragment : Fragment() {
     private fun showSuccessDeleteAllTaskDialog(): AlertDialog {
         return AlertDialog.Builder(context)
             .setTitle("Success")
-            .setMessage("Berhasil menghapus semua data")
+            .setMessage("All task successfully deleted")
             .show()
     }
 
@@ -106,11 +86,11 @@ class TaskCompleteFragment : Fragment() {
     private fun getDataTask() {
         tasks = TaskRepository.getDataTaskCompleteFromDatabase(dbTaskHelper, dbSubTaskHelper)
 
-        if(tasks != null && tasks.isNotEmpty()) {
+        if (tasks != null && tasks!!.isNotEmpty()){
             showTaskComplete()
-            taskAdapter.setData(tasks)
+            taskAdapter.setData(tasks!!)
 
-            binding.rvTask.adapter = taskAdapter
+            binding.rvTaskComplete.adapter = taskAdapter
         }else{
             hideTaskComplete()
         }
